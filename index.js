@@ -6,6 +6,7 @@ const objSchema = z.object({
     age: z.number(),
     kidneys: z.array(z.number()),
     username: z.string(),
+    email: z.string().email(),
     password: z.string()
 })
 
@@ -17,7 +18,7 @@ app.post('/test', (req, res)=> {
     if(response.success) {
         return res.status(200).json({msg: 'Everything looks good'})
     }
-    return res.json({msg : 'Everything is not good', errorMsg: response.error.issues[0].message});
+    return res.json({msg : 'Everything is not good', errorMsg: response.error.issues[0].message, msg : response.error});
 })
 
 //Global catch
