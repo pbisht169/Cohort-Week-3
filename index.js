@@ -2,20 +2,21 @@ const express = require("express");
 const z = require("zod");
 const app = express();
 
-const kidneysSchema = z.array(z.number())
+const objSchema = z.object({
+    age: z.number(),
+    kidneys: z.array(z.number()),
+    username: z.string(),
+    password: z.string()
+})
 
 app.use(express.json());
 app.post('/test', (req, res)=> {
-    const age = req.body.age;
-    const kidneys = req.body.kidneys;
-    const response = kidneysSchema.safeParse(kidneys)
+    const obj = req.body;
+    const response = objSchema.safeParse(obj);
     console.log(response)
     if(response.success) {
-        if(kidneys.length > 0) {
-            return res.json({msg : 'Everything is good'});
-        }
+        return res.status(200).json({msg: 'Everything looks good'})
     }
-    
     return res.json({msg : 'Everything is not good', errorMsg: response.error.issues[0].message});
 })
 
@@ -26,6 +27,7 @@ app.use(async(error, req, res, next)=> {
     await next(error);
     console.log('After returning back from next()')
 })
+
 app.use((error, req, res, next)=> {
     //This middleware only runs when there is an exception in the above routes
     console.log('Reach 2', error)
